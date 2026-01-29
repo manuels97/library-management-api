@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@ControllerAdvice // Escucha todas las excepciones de todos los controllers
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class) // Captura cualquier error genérico
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
@@ -27,6 +27,6 @@ public class GlobalExceptionHandler {
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
 
-        return new ResponseEntity<>(body, HttpStatus.CONFLICT); // Código 409
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
 }

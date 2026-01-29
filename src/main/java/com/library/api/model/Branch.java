@@ -21,6 +21,6 @@ public class Branch {
 
 
     @OneToMany(mappedBy = "branch")
-    @JsonIgnore // Importante para evitar recursión infinita en el JSON
+    @JsonIgnore
     private List<Book> books;
 }

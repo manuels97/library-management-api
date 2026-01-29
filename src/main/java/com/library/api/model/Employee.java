@@ -14,9 +14,7 @@ public class Employee {
 
     private String firstName;
     private String lastName;
-    private String position; // Ej: "Admin", "Librarian", "Cleaner"
-
-    // Relación: Muchos empleados trabajan en una Sede
+    private String position;
     @ManyToOne
     @JoinColumn(name = "id_branch")
     private Branch branch;

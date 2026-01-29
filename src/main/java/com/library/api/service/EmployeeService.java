@@ -25,7 +25,7 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public void saveEmployee(Employee employee) {
-        // VALIDACIÓN: ¿La sede asignada existe?
+
         if (employee.getBranch() != null) {
             Long idBranch = employee.getBranch().getIdBranch();
             Branch branch = branchRepo.findById(idBranch).orElse(null);
@@ -33,7 +33,7 @@ public class EmployeeService implements IEmployeeService {
             if (branch == null) {
                 throw new RuntimeException("Cannot create employee: Branch not found.");
             }
-            // Aseguramos que el objeto branch esté completo antes de guardar
+
             employee.setBranch(branch);
         }
         empRepo.save(employee);

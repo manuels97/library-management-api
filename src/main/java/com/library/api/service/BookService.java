@@ -27,7 +27,7 @@ public class BookService implements IBookService {
 
     @Override
     public List<Book> getBooks() {
-        // CORRECCIÓN: Ahora pide todos los libros al repositorio
+
         return bookRepo.findAll();
     }
 
@@ -38,14 +38,13 @@ public class BookService implements IBookService {
 
     @Override
     public void deleteBook(Long idBook) {
-        // CORRECCIÓN: Borra por ID usando el repositorio
+
         bookRepo.deleteById(idBook);
     }
 
     @Override
     public Book findBook(Long idBook) {
-        // CORRECCIÓN: Busca en la DB. Si no lo encuentra, devuelve null
-        // .orElse(null) es vital para evitar errores de Optional
+
         return bookRepo.findById(idBook).orElse(null);
     }
 
@@ -53,7 +52,7 @@ public class BookService implements IBookService {
     public BookDTO getBookInfo(Long idBook) {
         Book book = this.findBook(idBook);
 
-        // ESCUDO DE SEGURIDAD: Si el libro no existe en MySQL, no intentamos mapearlo
+
         if (book == null) {
             return null;
         }
@@ -74,43 +73,43 @@ public class BookService implements IBookService {
 
     @Override
     public List<BookDTO> getBooksByGenre(String genre) {
-        // 1. Buscamos los libros en la base de datos
+
         List<Book> books = bookRepo.findByGenre(genre);
 
-        // 2. Usamos Streams para transformar la lista (Mapeo)
+
         return books.stream()
                 .map(book -> {
                     BookDTO dto = new BookDTO();
                     dto.setBookTitle(book.getTitle());
                     dto.setBookGenre(book.getGenre());
-                    // Lógica para el nombre del lector
+
                     dto.setReaderFullName(book.getReader() != null ?
                             book.getReader().getFirstName() + " " + book.getReader().getLastName() :
                             "Available in shelves");
                     return dto;
                 })
-                .toList(); // Convertimos el flujo de nuevo a una lista
+                .toList();
     }
 
 
     @Override
     public void assignBookToBranch(Long idBook, Long idBranch) {
-        // 1. Buscamos el libro
+
         Book book = this.findBook(idBook);
         if (book == null) {
             throw new AlreadyExistsException("Book not found with ID: " + idBook);
         }
 
-        // 2. Buscamos la sede
+
         Branch branch = branchRepo.findById(idBranch).orElse(null);
         if (branch == null) {
             throw new AlreadyExistsException("Branch not found with ID: " + idBranch);
         }
 
-        // 3. Realizamos la asignación
+
         book.setBranch(branch);
 
-        // 4. Guardamos el cambio
+
         bookRepo.save(book);
     }
 
@@ -119,22 +118,19 @@ public class BookService implements IBookService {
 
     @Override
     public void borrowBook(Long idBook, Long idReader) {
-        // 1. Buscar el libro
         Book book = bookRepo.findById(idBook)
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
 
-        // 2. REGLA DE ORO: ¿Está disponible?
-        if (!book.isAvailable() || book.getReader() != null) {
+        // Verificamos si NO está disponible (false) o si ya tiene lector
+        if (Boolean.FALSE.equals(book.getAvailable()) || book.getReader() != null) {
             throw new RuntimeException("El libro ya está prestado o no está disponible.");
         }
 
-        // 3. Buscar al lector
         Reader reader = readerRepo.findById(idReader)
                 .orElseThrow(() -> new RuntimeException("Lector no encontrado"));
 
-        // 4. Realizar el préstamo
         book.setReader(reader);
-        book.setAvailable(false); // <--- Marcamos como NO disponible
+        book.setAvailable(false); // Lombok genera setAvailable(Boolean b) igual que antes
 
         bookRepo.save(book);
     }

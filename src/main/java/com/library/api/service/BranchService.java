@@ -14,7 +14,7 @@ public class BranchService implements IBranchService {
 
     @Override
     public List<Branch> getBranches() {
-        return branchRepo.findAll(); // Cambia List.of() por esto
+        return branchRepo.findAll();
     }
 
     @Override
@@ -31,5 +31,5 @@ public class BranchService implements IBranchService {
     public Branch findBranch(Long id) {
         return branchRepo.findById(id).orElse(null);
     }
-    // ... agrega el resto de métodos CRUD (getBranches, deleteBranch)
+
 }

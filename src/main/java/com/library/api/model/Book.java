@@ -23,8 +23,8 @@ public class Book {
     private Reader reader;
 
     @ManyToOne
-    @JoinColumn(name = "id_branch") // Nombre de la columna en la tabla de MySQL
+    @JoinColumn(name = "id_branch")
     private Branch branch;
 
-    private boolean available = true; // Por defecto, el libro está disponible
+    private Boolean available = true;
 }

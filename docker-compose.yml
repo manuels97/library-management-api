@@ -1,5 +1,5 @@
 services:
-  # Servicio 1: La Base de Datos MySQL
+
   db:
     image: mysql:8.0
     container_name: mysql-db
@@ -12,7 +12,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
-  # Servicio 2: Tu Aplicación Spring Boot
+
   app:
     build:
       context: .
@@ -23,7 +23,7 @@ services:
     depends_on:
       - db
     environment:
-      # Usamos 'db' (el nombre del servicio) como host
+
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/library_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root

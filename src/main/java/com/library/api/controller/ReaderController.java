@@ -22,12 +22,12 @@ public class ReaderController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    // Nuevo: Buscar un lector específico
+
     @GetMapping("/get/{id}")
     public ResponseEntity<Reader> getReaderById(@PathVariable Long id) {
         Reader reader = readerServ.findReader(id);
         if (reader == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 si no existe
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(reader, HttpStatus.OK);
     }

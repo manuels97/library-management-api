@@ -31,15 +31,15 @@ public class ReaderService implements IReaderService {
 
     @Override
     public void saveReader(Reader reader) {
-        // 1. Buscamos si ya existe alguien con ese DNI
+
         Reader existingReader = readerRepo.findByDni(reader.getDni());
 
-        // 2. Si existe, "explotamos" con nuestra excepción personalizada
+
         if (existingReader != null) {
             throw new AlreadyExistsException("A reader with DNI " + reader.getDni() + " already exists.");
         }
 
-        // 3. Si no existe, guardamos normalmente
+
         readerRepo.save(reader);
     }
 }
