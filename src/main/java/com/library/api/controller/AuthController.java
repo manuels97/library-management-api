@@ -1,33 +1,31 @@
 package com.library.api.controller;
 
+import com.library.api.dto.UserResponseDTO;
 import com.library.api.model.User;
-import com.library.api.repository.UserRepository;
+import com.library.api.service.IUserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private IUserService userServ;
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
+    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody User user) {
+        UserResponseDTO response = userServ.registerUser(user);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-
-
-        if (!user.getRole().startsWith("ROLE_")) {
-            user.setRole("ROLE_" + user.getRole().toUpperCase());
-        }
-
-        userRepository.save(user);
-        return "Usuario registrado con éxito: " + user.getUsername();
+    @GetMapping("/users")
+    public ResponseEntity<List<UserResponseDTO>> getUsers() {
+        return ResponseEntity.ok(userServ.getAllUsers());
     }
 }

@@ -1,30 +1,37 @@
 package com.library.api.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
+@Getter @Setter
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idBook;
+    private Long id;
+
+    @NotBlank(message = "El título no puede estar vacío")
+    @Size(min = 2, max = 100)
     private String title;
+
+    @NotBlank(message = "El autor es obligatorio")
     private String author;
+
+    @NotBlank(message = "El género es obligatorio")
     private String genre;
 
-    @OneToOne
-    @JoinColumn(name = "id_reader", referencedColumnName = "idReader")
-    private Reader reader;
+    @NotNull
+    private Boolean available = true;
 
     @ManyToOne
     @JoinColumn(name = "id_branch")
     private Branch branch;
 
-    private Boolean available = true;
+    @ManyToOne
+    @JoinColumn(name = "id_reader")
+    private Reader reader;
 }

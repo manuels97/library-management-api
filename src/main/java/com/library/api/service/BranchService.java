@@ -1,20 +1,27 @@
 package com.library.api.service;
 
+import com.library.api.dto.BranchDTO;
+import com.library.api.exception.ResourceNotFoundException;
 import com.library.api.model.Branch;
 import com.library.api.repository.IBranchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BranchService implements IBranchService {
+
     @Autowired
     private IBranchRepository branchRepo;
 
     @Override
-    public List<Branch> getBranches() {
-        return branchRepo.findAll();
+    public List<BranchDTO> getBranches() {
+        return branchRepo.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -24,12 +31,26 @@ public class BranchService implements IBranchService {
 
     @Override
     public void deleteBranch(Long idBranch) {
-
+        // Implementamos la lógica de borrado con validación
+        if (!branchRepo.existsById(idBranch)) {
+            throw new ResourceNotFoundException("No se encontró la sucursal para eliminar con ID: " + idBranch);
+        }
+        branchRepo.deleteById(idBranch);
     }
 
     @Override
-    public Branch findBranch(Long id) {
-        return branchRepo.findById(id).orElse(null);
+    public BranchDTO findBranch(Long id) {
+        Branch branch = branchRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Sucursal no encontrada con ID: " + id));
+        return convertToDTO(branch);
     }
 
+    // Método traductor de Branch a BranchDTO
+    private BranchDTO convertToDTO(Branch branch) {
+        BranchDTO dto = new BranchDTO();
+        dto.setIdBranch(branch.getIdBranch());
+        dto.setBranchName(branch.getName());
+        dto.setBranchAddress(branch.getAddress());
+        return dto;
+    }
 }

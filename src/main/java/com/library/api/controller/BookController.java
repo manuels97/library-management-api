@@ -3,6 +3,7 @@ package com.library.api.controller;
 import com.library.api.dto.BookDTO;
 import com.library.api.model.Book;
 import com.library.api.service.IBookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,36 +18,27 @@ public class BookController {
     @Autowired
     private IBookService bookServ;
 
+    // 1. CORREGIDO: Ahora devuelve List<BookDTO>
     @GetMapping("/get")
-    public ResponseEntity<List<Book>> getBooks() {
+    public ResponseEntity<List<BookDTO>> getBooks() {
         return ResponseEntity.ok(bookServ.getBooks());
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> saveBook(@RequestBody Book book) {
+    public ResponseEntity<String> saveBook(@Valid @RequestBody Book book) {
         bookServ.saveBook(book);
         return new ResponseEntity<>("Book registered successfully", HttpStatus.CREATED);
     }
 
     @GetMapping("/info/{id}")
     public ResponseEntity<BookDTO> getBookInfo(@PathVariable Long id) {
-        BookDTO dto = bookServ.getBookInfo(id);
-
-        if (dto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        // findBook ya devuelve BookDTO y maneja la excepción si no existe
+        return ResponseEntity.ok(bookServ.findBook(id));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBook(@PathVariable Long id) {
-        Book book = bookServ.findBook(id);
-
-        if (book == null) {
-            return new ResponseEntity<>("Cannot delete: Book not found", HttpStatus.NOT_FOUND);
-        }
-
+        // No hace falta buscarlo acá, el Service ya valida la existencia
         bookServ.deleteBook(id);
         return new ResponseEntity<>("Book deleted successfully", HttpStatus.OK);
     }
@@ -54,12 +46,7 @@ public class BookController {
     @GetMapping("/genre/{genreName}")
     public ResponseEntity<List<BookDTO>> getBooksByGenre(@PathVariable String genreName) {
         List<BookDTO> list = bookServ.getBooksByGenre(genreName);
-
-        if (list.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(list, HttpStatus.OK); // Código 200
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PatchMapping("/{idBook}/assign-branch/{idBranch}")
@@ -68,22 +55,16 @@ public class BookController {
         return ResponseEntity.ok("Book " + idBook + " successfully assigned to branch " + idBranch);
     }
 
+    // 2. LIMPIEZA: Quitamos los try-catch. El GlobalExceptionHandler se encarga.
     @PatchMapping("/{idBook}/borrow/{idReader}")
     public ResponseEntity<String> borrowBook(@PathVariable Long idBook, @PathVariable Long idReader) {
-        try {
-            bookServ.borrowBook(idBook, idReader);
-            return ResponseEntity.ok("Libro prestado con éxito.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        bookServ.borrowBook(idBook, idReader);
+        return ResponseEntity.ok("Libro prestado con éxito.");
     }
+
     @PatchMapping("/{idBook}/return")
     public ResponseEntity<String> returnBook(@PathVariable Long idBook) {
-        try {
-            bookServ.returnBook(idBook);
-            return ResponseEntity.ok("Libro devuelto y disponible para el siguiente lector.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        bookServ.returnBook(idBook);
+        return ResponseEntity.ok("Libro devuelto y disponible para el siguiente lector.");
     }
 }
