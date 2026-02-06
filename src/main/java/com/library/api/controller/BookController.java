@@ -18,7 +18,7 @@ public class BookController {
     @Autowired
     private IBookService bookServ;
 
-    // 1. CORREGIDO: Ahora devuelve List<BookDTO>
+
     @GetMapping("/get")
     public ResponseEntity<List<BookDTO>> getBooks() {
         return ResponseEntity.ok(bookServ.getBooks());
@@ -32,13 +32,13 @@ public class BookController {
 
     @GetMapping("/info/{id}")
     public ResponseEntity<BookDTO> getBookInfo(@PathVariable Long id) {
-        // findBook ya devuelve BookDTO y maneja la excepción si no existe
+
         return ResponseEntity.ok(bookServ.findBook(id));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBook(@PathVariable Long id) {
-        // No hace falta buscarlo acá, el Service ya valida la existencia
+
         bookServ.deleteBook(id);
         return new ResponseEntity<>("Book deleted successfully", HttpStatus.OK);
     }
@@ -55,7 +55,7 @@ public class BookController {
         return ResponseEntity.ok("Book " + idBook + " successfully assigned to branch " + idBranch);
     }
 
-    // 2. LIMPIEZA: Quitamos los try-catch. El GlobalExceptionHandler se encarga.
+
     @PatchMapping("/{idBook}/borrow/{idReader}")
     public ResponseEntity<String> borrowBook(@PathVariable Long idBook, @PathVariable Long idReader) {
         bookServ.borrowBook(idBook, idReader);

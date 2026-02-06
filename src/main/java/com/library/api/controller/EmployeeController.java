@@ -18,7 +18,7 @@ public class EmployeeController {
     @Autowired
     private IEmployeeService empServ;
 
-    // 1. CORREGIDO: El tipo de retorno ahora es List<EmployeeDTO>
+
     @GetMapping("/get")
     public ResponseEntity<List<EmployeeDTO>> getEmployees() {
         return ResponseEntity.ok(empServ.getEmployees());
@@ -30,13 +30,11 @@ public class EmployeeController {
         return new ResponseEntity<>("Employee registered successfully", HttpStatus.CREATED);
     }
 
-    // 2. CORREGIDO: La búsqueda por sucursal también devuelve DTOs
     @GetMapping("/branch/{idBranch}")
     public ResponseEntity<List<EmployeeDTO>> getByBranch(@PathVariable Long idBranch) {
         return ResponseEntity.ok(empServ.getEmployeesByBranch(idBranch));
     }
 
-    // 3. EXTRA: Endpoint para buscar un empleado individual
     @GetMapping("/find/{id}")
     public ResponseEntity<EmployeeDTO> findEmployee(@PathVariable Long id) {
         return ResponseEntity.ok(empServ.findEmployee(id));

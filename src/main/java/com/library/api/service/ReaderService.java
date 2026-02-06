@@ -17,7 +17,6 @@ public class ReaderService implements IReaderService {
     @Autowired
     private IReaderRepository readerRepo;
 
-    // 1. Convertimos la lista de Entidades a lista de DTOs
     @Override
     public List<ReaderDTO> getReaders() {
         List<Reader> readers = readerRepo.findAll();
@@ -28,14 +27,12 @@ public class ReaderService implements IReaderService {
 
     @Override
     public void deleteReader(Long idReader) {
-        // Verificamos si existe antes de borrar para lanzar excepción si no
         if (!readerRepo.existsById(idReader)) {
             throw new ResourceNotFoundException("No se puede eliminar: Lector no encontrado con ID: " + idReader);
         }
         readerRepo.deleteById(idReader);
     }
 
-    // 2. Ahora devuelve un DTO y maneja la excepción de "No encontrado"
     @Override
     public ReaderDTO findReader(Long idReader) {
         Reader reader = readerRepo.findById(idReader)
@@ -52,10 +49,9 @@ public class ReaderService implements IReaderService {
         readerRepo.save(reader);
     }
 
-    // 3. Método de mapeo (El traductor de Entity a DTO)
     private ReaderDTO convertToDTO(Reader reader) {
         ReaderDTO dto = new ReaderDTO();
-        dto.setIdReader(reader.getIdReader());
+        dto.setIdReader(reader.getId());
         dto.setReaderFullName(reader.getFirstName() + " " + reader.getLastName());
         dto.setReaderDni(reader.getDni());
         dto.setReaderPhone(reader.getPhoneNumber());

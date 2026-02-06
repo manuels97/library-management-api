@@ -18,7 +18,6 @@ public class BranchController {
     @Autowired
     private IBranchService branchServ;
 
-    // 1. CORREGIDO: Ahora el tipo de retorno es List<BranchDTO>
     @GetMapping("/get")
     public ResponseEntity<List<BranchDTO>> getBranches() {
         return ResponseEntity.ok(branchServ.getBranches());
@@ -30,16 +29,14 @@ public class BranchController {
         return new ResponseEntity<>("Branch created successfully", HttpStatus.CREATED);
     }
 
-    // 2. CORREGIDO: findBranch ahora devuelve BranchDTO
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBranch(@PathVariable Long id) {
-        // El Service ya lanza ResourceNotFoundException si no existe,
-        // así que podemos simplificarlo a una sola línea:
+
         branchServ.deleteBranch(id);
         return new ResponseEntity<>("Branch deleted successfully", HttpStatus.OK);
     }
 
-    // Opcional: Agregar un endpoint para buscar una sola sucursal
+
     @GetMapping("/find/{id}")
     public ResponseEntity<BranchDTO> findBranch(@PathVariable Long id) {
         return ResponseEntity.ok(branchServ.findBranch(id));

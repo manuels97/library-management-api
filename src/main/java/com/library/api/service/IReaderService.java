@@ -7,6 +7,6 @@ import java.util.List;
 public interface IReaderService {
     List<ReaderDTO> getReaders();
     void deleteReader(Long idReader);
-    ReaderDTO findReader(Long idReader); // Cambiado de Reader a ReaderDTO
+    ReaderDTO findReader(Long idReader);
     void saveReader(Reader reader);
 }

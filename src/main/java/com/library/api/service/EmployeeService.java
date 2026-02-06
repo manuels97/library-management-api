@@ -33,7 +33,7 @@ public class EmployeeService implements IEmployeeService {
     public void saveEmployee(Employee employee) {
         if (employee.getBranch() != null) {
             Long idBranch = employee.getBranch().getIdBranch();
-            // Cambiamos el null por nuestra excepción personalizada
+
             Branch branch = branchRepo.findById(idBranch)
                     .orElseThrow(() -> new ResourceNotFoundException("No se puede crear empleado: Sucursal no encontrada con ID: " + idBranch));
 
@@ -65,14 +65,13 @@ public class EmployeeService implements IEmployeeService {
                 .collect(Collectors.toList());
     }
 
-    // El "traductor" para Employee
+
     private EmployeeDTO convertToDTO(Employee emp) {
         EmployeeDTO dto = new EmployeeDTO();
         dto.setIdEmployee(emp.getIdEmployee());
         dto.setEmployeeFullName(emp.getFirstName() + " " + emp.getLastName());
         dto.setEmployeePosition(emp.getPosition());
 
-        // Evitamos NullPointerException si el empleado no tiene sucursal asignada
         if (emp.getBranch() != null) {
             dto.setBranchName(emp.getBranch().getName());
         } else {

@@ -31,7 +31,6 @@ public class BranchService implements IBranchService {
 
     @Override
     public void deleteBranch(Long idBranch) {
-        // Implementamos la lógica de borrado con validación
         if (!branchRepo.existsById(idBranch)) {
             throw new ResourceNotFoundException("No se encontró la sucursal para eliminar con ID: " + idBranch);
         }
@@ -45,7 +44,6 @@ public class BranchService implements IBranchService {
         return convertToDTO(branch);
     }
 
-    // Método traductor de Branch a BranchDTO
     private BranchDTO convertToDTO(Branch branch) {
         BranchDTO dto = new BranchDTO();
         dto.setIdBranch(branch.getIdBranch());

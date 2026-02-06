@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IReaderRepository extends JpaRepository<Reader, Long> {
-    // save(), findAll(), findById(), deleteById(), etc.
     Reader findByDni(String dni);
 }
